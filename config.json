@@ -1,0 +1,10 @@
+{
+  "ports": [
+    { "source": "1984", "target": "1984" },
+    { "source": "8555", "target": "8555" }
+  ],
+  "devices": ["/dev/video0"],
+  "volumes": [],
+  "flags": [],
+  "websites": ["http://localhost:1984"]
+}

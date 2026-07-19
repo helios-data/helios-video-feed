@@ -1,0 +1,23 @@
+# go2rtc capture bridge for the USB VTX capture card.
+# Reads the FIXED container device path /dev/video0, which the launcher maps
+# from the user-selected host device (e.g. /dev/video2). The overlay/OBS pull
+# the restream over WHEP at http://<host>:1984/api/whep?src=cloudburst.
+
+api:
+  listen: ":1984"          # WHEP signaling (forwarded to host :1984)
+
+streams:
+  cloudburst:
+    # V4L2 USB capture card -> H.264 for WebRTC. Software x264 by default:
+    # a static/black input (no VTX signal) can stall some hardware encoders
+    # (no keyframe), which looks like a hang. Append #hardware only after
+    # confirming your encoder emits keyframes on a still frame.
+    - "ffmpeg:device?video=/dev/video0&input_format=mjpeg&video_size=1920x1080&framerate=30#video=h264"
+
+webrtc:
+  listen: ":8555"          # WebRTC media (TCP; forwarded to host :8555)
+  candidates:
+    # Same-host browser/OBS: localhost is reachable via the published port.
+    - 127.0.0.1:8555
+    # For OBS/overlay on a DIFFERENT LAN machine, also advertise the host LAN IP,
+    # e.g.  - 192.168.1.50:8555   (or inject via env: ${WEBRTC_HOST_IP}:8555)
