@@ -5,6 +5,7 @@
 
 api:
   listen: ":1984"          # WHEP signaling (forwarded to host :1984)
+  origin: "*"              # overlay POSTs cross-origin
 
 streams:
   cloudburst:
